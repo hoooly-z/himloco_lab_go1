@@ -9,6 +9,7 @@ Reference: https://github.com/unitreerobotics/unitree_ros
 """
 
 import os
+from pathlib import Path
 
 import isaaclab.sim as sim_utils
 from isaaclab.assets.articulation import ArticulationCfg
@@ -20,6 +21,7 @@ from himloco_lab.assets import unitree_actuators
 
 UNITREE_MODEL_DIR = "path/to/unitree_model"  # Replace with the actual path to your unitree_model directory
 UNITREE_ROS_DIR = "path/to/unitree_ros"  # Replace with the actual path to your unitree_ros package
+HIMLOCO_ASSETS_DIR = Path(__file__).resolve().parent
 
 @configclass
 class UnitreeArticulationCfg(ArticulationCfg):
@@ -135,6 +137,57 @@ UNITREE_GO2_CFG = UnitreeArticulationCfg(
         "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
         "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",
         "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint"
+    ],
+    # fmt: on
+)
+
+
+UNITREE_GO1_CFG = UnitreeArticulationCfg(
+    spawn=UnitreeUrdfFileCfg(
+        # The Go1 description is distributed with this extension, so the task
+        # does not depend on a machine-specific unitree_ros checkout.
+        asset_path=str(HIMLOCO_ASSETS_DIR / "robots" / "go1" / "urdf" / "go1.urdf"),
+    ),
+    init_state=ArticulationCfg.InitialStateCfg(
+        pos=(0.0, 0.0, 0.42),
+        joint_pos={
+            "FR_hip_joint": -0.1,
+            "FL_hip_joint": 0.1,
+            "RR_hip_joint": -0.1,
+            "RL_hip_joint": 0.1,
+            "F[L,R]_thigh_joint": 0.8,
+            "R[L,R]_thigh_joint": 1.0,
+            ".*_calf_joint": -1.5,
+        },
+        joint_vel={".*": 0.0},
+    ),
+    actuators={
+        "hips": DCMotorCfg(
+            joint_names_expr=[".*_hip_joint"],
+            effort_limit=33.5,
+            saturation_effort=33.5,
+            velocity_limit=50.0,
+            stiffness=40.0,
+            damping=1.0,
+            friction=0.01,
+        ),
+        "legs": DCMotorCfg(
+            joint_names_expr=[".*_(thigh|calf)_joint"],
+            effort_limit=33.5,
+            saturation_effort=33.5,
+            velocity_limit=28.0,
+            stiffness=40.0,
+            damping=1.0,
+            friction=0.01,
+        ),
+    },
+    # Keep the ordering used by the Unitree SDK and existing HIMLoco Go1 policies.
+    # fmt: off
+    joint_sdk_names=[
+        "FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
+        "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
+        "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",
+        "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint",
     ],
     # fmt: on
 )

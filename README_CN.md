@@ -79,7 +79,7 @@ python -m pip install -e source/himloco_lab
     ```bash
     git clone https://huggingface.co/datasets/unitreerobotics/unitree_model
     ```
-  - 配置 `UNITREE_MODEL_DIR` 在 `source/himloco_lab/himloco_lab/assets/robots/unitree.py` 中。
+  - 配置 `UNITREE_MODEL_DIR` 在 `source/himloco_lab/himloco_lab/assets/unitree.py` 中。
 
     ```bash
     UNITREE_MODEL_DIR = "</home/user/projects/unitree_usd>"
@@ -90,7 +90,7 @@ python -m pip install -e source/himloco_lab
       ```
       git clone https://github.com/unitreerobotics/unitree_ros.git
       ```
-  - 配置 `UNITREE_ROS_DIR` 在 `source/himloco_lab/himloco_lab/assets/robots/unitree.py` 中。
+  - 配置 `UNITREE_ROS_DIR` 在 `source/himloco_lab/himloco_lab/assets/unitree.py` 中。
     ```bash
     UNITREE_ROS_DIR = "</home/user/projects/unitree_ros/unitree_ros>"
     ```
@@ -106,12 +106,25 @@ python -m pip install -e source/himloco_lab
 python scripts/himloco_rsl_rl/train.py --task Unitree-Go2-Velocity --headless
 ```
 
+Go1 适配版将 URDF 和网格直接放在本仓库中，并保持上游的 200 Hz 仿真、
+50 Hz 策略频率：
+
+```bash
+python scripts/himloco_rsl_rl/train.py --task Unitree-Go1-Velocity --headless
+```
+
 ### 推理和播放
 
 运行已训练的策略进行批量推理：
 
 ```bash
 python scripts/himloco_rsl_rl/play.py --task Unitree-Go2-Velocity-Play
+```
+
+Go1 播放命令：
+
+```bash
+python scripts/himloco_rsl_rl/play.py --task Unitree-Go1-Velocity-Play
 ```
 
 ### 交互式控制
@@ -144,6 +157,10 @@ python scripts/himloco_rsl_rl/play.py --task Unitree-Go2-Velocity-Play
 - `encoder.onnx` & `policy.onnx` - ONNX 格式（分离模型）
 
 ## 部署指南
+
+> **Go1 当前范围：** 本次适配支持 Isaac Lab 训练、播放和模型导出。现有 C++
+> 部署程序使用 Go2 SDK2/DDS 消息定义，不能直接作为 Go1 真机运行器。连接
+> Go1 真机前请阅读 `deploy/robots/go1/README.md`。
 
 模型训练完成后，需要在 Mujoco 中对训练好的策略进行模拟验证（Sim2Sim），测试模型性能。
 然后才能进行真实机器人部署（Sim2Real）。
@@ -208,4 +225,3 @@ cd himloco_lab/deploy/robots/go2/build
 - [HimLoco](https://github.com/RoboLoco/HimLoco)
 - [Isaac Lab](https://isaac-sim.github.io/IsaacLab/)
 - [unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab)
-

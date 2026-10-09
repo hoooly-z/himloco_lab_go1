@@ -78,7 +78,7 @@ python -m pip install -e source/himloco_lab
     ```bash
     git clone https://huggingface.co/datasets/unitreerobotics/unitree_model
     ```
-  - Config `UNITREE_MODEL_DIR` in `source/himloco_lab/himloco_lab/assets/robots/unitree.py`.
+  - Config `UNITREE_MODEL_DIR` in `source/himloco_lab/himloco_lab/assets/unitree.py`.
 
     ```bash
     UNITREE_MODEL_DIR = "</home/user/projects/unitree_usd>"
@@ -89,7 +89,7 @@ python -m pip install -e source/himloco_lab
       ```
       git clone https://github.com/unitreerobotics/unitree_ros.git
       ```
-  - Config `UNITREE_ROS_DIR` in `source/himloco_lab/himloco_lab/assets/robots/unitree.py`.
+  - Config `UNITREE_ROS_DIR` in `source/himloco_lab/himloco_lab/assets/unitree.py`.
     ```bash
     UNITREE_ROS_DIR = "</home/user/projects/unitree_ros/unitree_ros>"
     ```
@@ -105,12 +105,25 @@ Train a HimLoco policy on Unitree Go2:
 python scripts/himloco_rsl_rl/train.py --task Unitree-Go2-Velocity --headless
 ```
 
+The Go1 adaptation bundles its URDF and meshes in this repository and keeps the
+upstream 200 Hz simulation / 50 Hz policy timing:
+
+```bash
+python scripts/himloco_rsl_rl/train.py --task Unitree-Go1-Velocity --headless
+```
+
 ### Inference and Playback
 
 Run a trained policy for batch inference:
 
 ```bash
 python scripts/himloco_rsl_rl/play.py --task Unitree-Go2-Velocity-Play
+```
+
+For Go1:
+
+```bash
+python scripts/himloco_rsl_rl/play.py --task Unitree-Go1-Velocity-Play
 ```
 
 ### Interactive Control
@@ -143,6 +156,11 @@ The script generates files in the log directory, including:
 - `encoder.onnx` & `policy.onnx` - ONNX format (separate models)
 
 ## Deployment Guide
+
+> **Go1 status:** this adaptation covers Isaac Lab training, playback and model
+> export. The existing C++ deployment target uses the Go2 SDK2/DDS message
+> definitions and is not a Go1 hardware runner. See `deploy/robots/go1/README.md`
+> before connecting a physical Go1.
 
 After model training, you need to verify the trained policy in Mujoco (Sim2Sim) to test model performance.
 Only then can you proceed to real robot deployment (Sim2Real).

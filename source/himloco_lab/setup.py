@@ -31,6 +31,12 @@ setup(
     version=EXTENSION_TOML_DATA["package"]["version"],
     description=EXTENSION_TOML_DATA["package"]["description"],
     keywords=EXTENSION_TOML_DATA["package"]["keywords"],
+    package_data={
+        "himloco_lab": [
+            "assets/robots/go1/urdf/*.urdf",
+            "assets/robots/go1/meshes/*.stl",
+        ]
+    },
     install_requires=INSTALL_REQUIRES,
     license="Apache-2.0",
     include_package_data=True,
